@@ -1,0 +1,19 @@
+{
+  "outDir": "src/types",
+  "specVersions": "https://substrate-gateway.plugdefi.app/graphql",
+  "events": [
+    "Staking.EraPaid",
+    "Staking.Rewarded",
+    "Staking.Slashed",
+    "Staking.Bonded",
+    "Staking.Unbonded",
+    "Staking.Withdrawn",
+    "Staking.Kicked",
+    "Staking.Chilled",
+    "Staking.PayoutStarted",
+    "Staking.StakersElected",
+    "Staking.ValidatorPrefsSet"
+  ],
+  "calls": [],
+  "storage": ["Staking.ErasStakers", "Staking.ActiveEra"]
+}

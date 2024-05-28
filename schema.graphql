@@ -1,0 +1,117 @@
+type Bonded @entity {
+  id: ID!
+  blockNumber: Int! @index
+  timestamp: DateTime! @index
+  extrinsicHash: String @index
+  stash: String!
+  amount: BigInt! @index
+}
+
+type Unbonded @entity {
+  id: ID!
+  blockNumber: Int! @index
+  timestamp: DateTime! @index
+  extrinsicHash: String @index
+  stash: String!
+  amount: BigInt! @index
+}
+
+type EraPaid @entity {
+  id: ID!
+  blockNumber: Int! @index
+  timestamp: DateTime! @index
+  extrinsicHash: String @index
+  eraIndex: Int! @index
+  validatorPayout: BigInt! @index
+  remainder: BigInt! @index
+}
+
+type Rewarded @entity {
+  id: ID!
+  blockNumber: Int! @index
+  timestamp: DateTime! @index
+  extrinsicHash: String @index
+  stash: String!
+  amount: BigInt! @index
+}
+
+type Slashed @entity {
+  id: ID!
+  blockNumber: Int! @index
+  timestamp: DateTime! @index
+  extrinsicHash: String @index
+  staker: String!
+  amount: BigInt! @index
+}
+
+type Kicked @entity {
+  id: ID!
+  blockNumber: Int! @index
+  timestamp: DateTime! @index
+  extrinsicHash: String @index
+  nominator: String!
+  stash: String!
+}
+
+type Chilled @entity {
+  id: ID!
+  blockNumber: Int! @index
+  timestamp: DateTime! @index
+  extrinsicHash: String @index
+  stash: String!
+}
+
+type PayoutStarted @entity {
+  id: ID!
+  blockNumber: Int! @index
+  timestamp: DateTime! @index
+  eraIndex: Int! @index
+  validatorStash: String!
+}
+
+type StakersElected @entity {
+  id: ID!
+  blockNumber: Int! @index
+  timestamp: DateTime! @index
+}
+
+type Withdrawn @entity {
+  id: ID!
+  blockNumber: Int! @index
+  timestamp: DateTime! @index
+  extrinsicHash: String @index
+  stash: String!
+  amount: BigInt! @index
+}
+
+type ValidatorPrefsSet @entity {
+  id: ID!
+  blockNumber: Int! @index
+  timestamp: DateTime! @index
+  stash: String!
+  commission: Int! @index
+  blocked: Boolean! @index
+}
+
+enum StakerType {
+  Validator
+  Nominator
+  Staker
+}
+
+type Staker @entity {
+  id: ID!
+  stakerType: StakerType!
+  eraIndex: Int! @index
+  stash: String!
+  parentStash: String
+  totalStake: BigInt!
+}
+
+type ActiveEra @entity {
+  id: ID!
+  eraIndex: Int! @index
+  blockNumber: Int! @index
+  timestamp: DateTime!
+  extrinsicHash: String
+}
