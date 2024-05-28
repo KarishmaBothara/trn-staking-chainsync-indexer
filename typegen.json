@@ -1,5 +1,6 @@
 {
   "outDir": "src/types",
+  //need to provide the correct endpoint, this is mockup only
   "specVersions": "https://substrate-gateway.plugdefi.app/graphql",
   "events": [
     "Staking.EraPaid",
@@ -15,5 +16,8 @@
     "Staking.ValidatorPrefsSet"
   ],
   "calls": [],
-  "storage": ["Staking.ErasStakers", "Staking.ActiveEra"]
+  "storage": [
+    "Staking.ErasStakers",
+    "Staking.ActiveEra"
+  ]
 }
