@@ -1,7 +1,6 @@
 {
   "outDir": "src/types",
-  //need to provide the correct endpoint, this is mockup only
-  "specVersions": "https://substrate-gateway.plugdefi.app/graphql",
+  "specVersions": "https://localhost:8000/graphql",
   "events": [
     "Staking.EraPaid",
     "Staking.Rewarded",
