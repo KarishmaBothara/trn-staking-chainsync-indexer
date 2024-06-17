@@ -1,7 +1,7 @@
 manifestVersion: subsquid.io/v0.1
-name: trn-staking-indexer
+name: trn-staking-chainsync-indexer
 version: 1
-description: 'trn-staking-indexer'
+description: 'trn-staking-chainsync-indexer'
 build: 
 deploy:
   addons:

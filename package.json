@@ -1,5 +1,5 @@
 {
-  "name": "trn-staking-indexer",
+  "name": "trn-staking-chainsync-indexer",
   "private": true,
   "engines": {
     "node": ">=16"
