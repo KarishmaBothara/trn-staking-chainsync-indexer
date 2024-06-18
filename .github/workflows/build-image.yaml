@@ -44,15 +44,22 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
 
     # https://github.com/docker/metadata-action
+    # - name: Docker meta
+    #   uses: docker/metadata-action@v4
+    #   id: meta
+    #   with:
+    #     images: ${{env.REGISTRY}}/${{env.IMAGE_NAME}}
+    #     tags: |
+    #       type=semver,pattern={{version}}
+    #       type=ref,event=pr
+    #       type=sha,enable=true,prefix=,suffix=,format=short
     - name: Docker meta
-      uses: docker/metadata-action@v4
       id: meta
+      uses: docker/metadata-action@v4
       with:
         images: ${{env.REGISTRY}}/${{env.IMAGE_NAME}}
         tags: |
-          type=semver,pattern={{version}}
-          type=ref,event=pr
-          type=sha,enable=true,prefix=,suffix=,format=short
+          type=sha, prefix=,format=short
     - name: Build, tag, and push docker image to Amazon ECR
       env:
         REGISTRY: ${{ steps.login-ecr.outputs.registry }}
