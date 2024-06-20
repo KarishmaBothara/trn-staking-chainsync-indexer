@@ -1,0 +1,199 @@
+Release "vortex-indexer-release" has been upgraded. Happy Helming!
+NAME: vortex-indexer-release
+LAST DEPLOYED: Wed Jun 19 19:50:13 2024
+NAMESPACE: vortex
+STATUS: pending-upgrade
+REVISION: 4
+TEST SUITE: None
+HOOKS:
+MANIFEST:
+---
+# Source: vortex-indexer/templates/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: vortex-indexer-sa
+  labels:
+    helm.sh/chart: vortex-indexer-0.1.0
+    app.kubernetes.io/name: vortex-indexer
+    app.kubernetes.io/instance: vortex-indexer-release
+    app.kubernetes.io/version: "0.1.0"
+    app.kubernetes.io/managed-by: Helm
+imagePullSecrets:
+  - name: github-registry
+---
+# Source: vortex-indexer/templates/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vortex-indexer
+data:
+  ARCHIVE_URL: http://squid-gateway-service.vortex.svc.cluster.local:8000/graphql
+  CHAIN_PREFIX: "193"
+  CHAIN_URL: wss://porcini.au.rootnet.app/archive/ws
+  GQL_PORT: "4350"
+  NODE_TLS_REJECT_UNAUTHORIZED: "0"
+  PROCESSOR_PROMETHEUS_PORT: "3000"
+  START_BLOCK: "1"
+---
+# Source: vortex-indexer/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: vortex-indexer
+  labels:
+    helm.sh/chart: vortex-indexer-0.1.0
+    app.kubernetes.io/name: vortex-indexer
+    app.kubernetes.io/instance: vortex-indexer-release
+    app.kubernetes.io/version: "0.1.0"
+    app.kubernetes.io/managed-by: Helm
+spec:
+  type: ClusterIP
+  ports:
+    - port: 4350
+      targetPort: graphql
+      protocol: TCP
+      name: graphql
+  selector:
+    app: vortex-indexer
+    app.kubernetes.io/name: vortex-indexer
+    app.kubernetes.io/instance: vortex-indexer-release
+---
+# Source: vortex-indexer/templates/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vortex-indexer
+  namespace: vortex
+  labels:
+    helm.sh/chart: vortex-indexer-0.1.0
+    app.kubernetes.io/name: vortex-indexer
+    app.kubernetes.io/instance: vortex-indexer-release
+    app.kubernetes.io/version: "0.1.0"
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    datree.skip/DEPLOYMENT_INCORRECT_REPLICAS_VALUE: only 1 replia is needed for web deployment, skipping.
+    datree.skip/CONTAINERS_MISSING_LIVENESSPROBE_KEY: no need for web deployment, skipping.
+    datree.skip/CONTAINERS_MISSING_READINESSPROBE_KEY: no need for web deployment, skipping.
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vortex-indexer
+      app.kubernetes.io/name: vortex-indexer
+      app.kubernetes.io/instance: vortex-indexer-release
+  template:
+    metadata:
+      labels:
+        app: vortex-indexer
+        app.kubernetes.io/name: vortex-indexer
+        app.kubernetes.io/instance: vortex-indexer-release
+    spec:
+      serviceAccountName: vortex-indexer-sa
+      securityContext:
+        {}
+      containers:
+        - name: vortex-indexer
+          securityContext:
+            {}
+          image: "ghcr.io/futureversecom/trn-chainsync-processor:3f433c0"
+          imagePullPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: vortex-indexer
+            - secretRef:
+                name: postgres-processor
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          resources:
+            limits:
+              cpu: 200m
+              memory: 512Mi
+            requests:
+              cpu: 50m
+              memory: 64Mi
+          # livenessProbe:
+          #   httpGet:
+          #     path: /api/health
+          #     port: http
+          #   initialDelaySeconds: 30
+          #   periodSeconds: 10
+          #   timeoutSeconds: 10
+          # readinessProbe:
+          #   httpGet:
+          #     path: /api/health
+          #     port: http
+          #   initialDelaySeconds: 30
+          #   periodSeconds: 10
+          #   timeoutSeconds: 10
+        - name: vortex-indexer-graphql
+          image: "ghcr.io/futureversecom/trn-chainsync-processor:3f433c0"
+          imagePullPolicy: Always
+          command: ["npm","run","query-node:start"]
+          envFrom:
+            - configMapRef:
+                name: vortex-indexer
+            - secretRef:
+                name: postgres-processor
+          ports:
+            - name: graphql
+              containerPort: 4350
+              protocol: TCP
+          # livenessProbe:
+          #   httpGet:
+          #     path: /health
+          #     port: http
+          #   initialDelaySeconds: 30
+          #   periodSeconds: 5
+          # readinessProbe:
+          #   httpGet:
+          #     path: /health
+          #     port: http
+          #   initialDelaySeconds: 30
+          #   periodSeconds: 5
+          resources:
+            limits:
+              cpu: 200m
+              memory: 512Mi
+            requests:
+              cpu: 50m
+              memory: 64Mi
+---
+# Source: vortex-indexer/templates/ingress.yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: vortex-indexer
+  labels:
+    helm.sh/chart: vortex-indexer-0.1.0
+    app.kubernetes.io/name: vortex-indexer
+    app.kubernetes.io/instance: vortex-indexer-release
+    app.kubernetes.io/version: "0.1.0"
+    app.kubernetes.io/managed-by: Helm
+  annotations:
+    cert-manager.io/cluster-issuer: kong-letsencrypt-prod
+    kubernetes.io/tls-acme: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  ingressClassName: alb
+  tls:
+    - hosts:
+        - "vrotex.au.dev.rootnet.app"
+      secretName: vrotex.au.dev.rootnet.app-tls
+  rules:
+    - host: "vrotex.au.dev.rootnet.app"
+      http:
+        paths:
+          - path: /indexer(/|$)(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: vortex-indexer
+                port:
+                  number: 4350
+
+NOTES:
+1. Get the application URL by running these commands:
+  https://vrotex.au.dev.rootnet.app/indexer(/|$)(.*)

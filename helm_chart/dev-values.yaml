@@ -1,0 +1,47 @@
+namespace: vortex
+replicaCount: 1
+
+image:
+  repository: "ghcr.io/futureversecom/trn-chainsync-processor"
+  pullPolicy: Always
+  tag: "3f433c0"
+
+configMap:
+  name: vortex-indexer
+  data:
+    PROCESSOR_PROMETHEUS_PORT: "3000"
+    GQL_PORT: "4350"
+    ARCHIVE_URL: "http://squid-gateway-service.vortex.svc.cluster.local:8000/graphql"
+    CHAIN_URL: "wss://porcini.au.rootnet.app/archive/ws"
+    CHAIN_PREFIX: "193"
+    START_BLOCK: "1"
+    PGSSLMODE: "require"
+    NODE_TLS_REJECT_UNAUTHORIZED: "0"
+
+service:
+  type: ClusterIP
+  port: 4350
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: "vortex-indexer-sa"
+  imagePullSecrets:
+    - name: github-registry
+
+ingress:
+  enabled: true
+  className: "alb"
+  annotations:
+    # nginx.ingress.kubernetes.io/rewrite-target: /$2
+    # cert-manager.io/cluster-issuer: kong-letsencrypt-prod
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: vortex.au.dev.rootnet.app
+      paths:
+        - path: /indexer(/|$)(.*)
+          pathType: Prefix
+  tls:
+    - hosts:
+        - vortex.au.dev.rootnet.app
+      secretName: vortex.au.dev.rootnet.app-tls
