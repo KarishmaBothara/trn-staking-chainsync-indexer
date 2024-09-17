@@ -1,5 +1,5 @@
-module.exports = class Data1692677867591 {
-    name = 'Data1692677867591'
+module.exports = class Data1726198456050 {
+    name = 'Data1726198456050'
 
     async up(db) {
         await db.query(`CREATE TABLE "bonded" ("id" character varying NOT NULL, "block_number" integer NOT NULL, "timestamp" TIMESTAMP WITH TIME ZONE NOT NULL, "extrinsic_hash" text, "stash" text NOT NULL, "amount" numeric NOT NULL, CONSTRAINT "PK_edbeba00ad7f6a17a6b0727d736" PRIMARY KEY ("id"))`)

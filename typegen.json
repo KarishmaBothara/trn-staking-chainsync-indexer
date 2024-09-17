@@ -1,6 +1,6 @@
 {
   "outDir": "src/types",
-  "specVersions": "https://localhost:8000/graphql",
+  "specVersions": "https://gateway.root.au.cicd.rootnet.app/graphql",
   "events": [
     "Staking.EraPaid",
     "Staking.Rewarded",
