@@ -24,7 +24,7 @@ on:
         type: string
 env:
   REGISTRY: "ghcr.io"
-  IMAGE_NAME: "ghcr.io/karishmabothara/trn-staking-chainsync-indexer"
+  IMAGE_NAME: "karishmabothara/trn-staking-chainsync-indexer"
 
 jobs:
   build:
@@ -57,6 +57,6 @@ jobs:
       env:
         IMAGE_TAG: ${{ steps.meta.outputs.tags }}
       run: |
-        docker build -t ${{ env.REGISTRY }}/${{ env.IMAGE_TAG }} .
-        docker push ${{ env.REGISTRY }}/${{ env.IMAGE_TAG }}
-        echo "DOCKER_IMAGE=${{ env.IMAGE_TAG }}" >> $GITHUB_ENV
+        docker build -t ${{ steps.meta.outputs.tags }} .
+        docker push ${{ steps.meta.outputs.tags }}
+        echo "DOCKER_IMAGE=${{ steps.meta.outputs.tags }}" >> $GITHUB_ENV
