@@ -24,7 +24,7 @@ on:
         type: string
 env:
   REGISTRY: "ghcr.io"
-  IMAGE_NAME: "ghcr.io/karishmabothara"
+  IMAGE_NAME: "ghcr.io/karishmabothara/trn-staking-chainsync-indexer"
 
 jobs:
   build:
