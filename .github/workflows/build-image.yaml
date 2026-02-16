@@ -13,6 +13,10 @@ on:
       image_tag:
         description: "Image tag after the build"
         required: false
+      token:
+        type: string
+        description: Deploy token, generate one with `repo` permission
+        required: true
   workflow_call:
     inputs:
       image_tag:
@@ -20,7 +24,7 @@ on:
         type: string
 env:
   REGISTRY: "ghcr.io"
-  IMAGE_NAME: "ghcr.io/karishmabothara/trn-chainsync-processor"
+  IMAGE_NAME: "ghcr.io/karishmabothara"
 
 jobs:
   build:
@@ -38,7 +42,7 @@ jobs:
       uses: docker/login-action@v2
       with:
         registry: ${{ env.REGISTRY }}
-        username: ${{ github.repository_owner }}
+        username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Docker meta
