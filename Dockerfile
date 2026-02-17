@@ -1,6 +1,6 @@
 # - Install dependencies only when needed
-# Use native platform for build stage
-FROM --platform=$BUILDPLATFORM node:18-alpine AS build
+FROM --platform=$BUILDPLATFORM node:18-alpine AS base
+RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
 COPY package*.json ./
@@ -14,7 +14,7 @@ COPY . .
 RUN npm run build
 
 # Production image, copy all the files and run
-FROM node:18-alpine AS runner
+FROM --platform=$BUILDPLATFORM node:18-alpine AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
